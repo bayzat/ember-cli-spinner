@@ -4,24 +4,56 @@ This README outlines the details of collaborating on this Ember addon.
 
 ## Installation
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+* `npm install github:kepek/ember-cli-spinner`
 
-## Running
+## Usage
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+```javascript
+// /app/routes/application.js
+import Ember from 'ember'
+import SpinnerRouteMixin from 'ember-cli-spinner/mixins/bay-zat/spinner'
 
-## Running Tests
+const {
+    inject
+} = Ember
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+export default Ember.Route.extend(SpinnerRouteMixin, {
+  // (...)
+})
 
-## Building
+```
 
-* `ember build`
+```hbs
+// /app/templates/application.hbs
+// /app/templates/application-loading.hbs
+{{bay-zat/spinner class="spinner--application" isLoading=isLoading}}
+```
 
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
-# ember-cli-spinner
+```js
+import Ember from 'ember';
+
+const {
+  computed,
+  inject
+} = Ember;
+
+export default Ember.Route.extend({
+  actions: {
+    createUser(model) {
+      this.send('loading');
+
+      model
+        .save()
+        .then((response) => {
+          // (...)
+        })
+        .catch((error) => {
+          // (...)
+        })
+        .finally(() => {
+          this.send('finished');
+        });
+    }
+  }
+});
+```
