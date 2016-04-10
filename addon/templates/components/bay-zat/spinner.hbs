@@ -1,0 +1,8 @@
+{{#if hasBlock}}
+  {{yield (hash
+    isLoading=(readonly isLoading)
+    loadingText=(readonly loadingText)
+  )}}
+{{else}}
+  {{loadingText}}
+{{/if}}

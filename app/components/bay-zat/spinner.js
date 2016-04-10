@@ -1,0 +1,1 @@
+export { default } from 'ember-cli-spinner/components/bay-zat/spinner';
