@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-npm install github:kepek/ember-cli-spinner
+npm install --save-dev github:kepek/ember-cli-spinner
 ```
 
 ## Usage
