@@ -1,6 +1,4 @@
-# Ember-cli-spinner
-
-This README outlines the details of collaborating on this Ember addon.
+# ember-cli-spinner
 
 ## Installation
 
