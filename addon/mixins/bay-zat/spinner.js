@@ -1,49 +1,54 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 
 const { computed, getOwner } = Ember;
 const addonName = 'ember-cli-spinner';
 
 function toggleSpinner(value) {
-  this.set('isLoading', value);
-}
+  let controller = this.controllerFor('application');
+  let config = getOwner(this).resolveRegistration('config:environment');
+  let rootElement = Ember.$(config.rootElement || 'body');
+  let loadingClassName = config[addonName].loadingClassName || 'is-loading';
 
-function showSpinner() {
-  return toggleSpinner.call(this, true, ...arguments);
+  this.set('isLoading', value);
+  controller.set('isLoading', value);
+  rootElement.toggleClass(loadingClassName, value);
+
+  if(this.router) {
+    this.router.one('didTransition', () => {
+      this.set('isLoading', !value);
+      controller.set('isLoading', !value);
+      rootElement.toggleClass(loadingClassName, !value);
+    });
+  }
 }
 
 function hideSpinner() {
-  return toggleSpinner.call(this, false, ...arguments);
+  toggleSpinner.call(this, false, ...arguments);
+}
+
+function showSpinner() {
+  toggleSpinner.call(this, true, ...arguments);
 }
 
 export default Ember.Mixin.create({
-  isLoading: computed('controller', {
-    get(key) {
-      return this._super(...arguments);
-    },
-    set(key, value) {
-      let controller = this.controllerFor('application');
-      let config = getOwner(this).resolveRegistration('config:environment');
-      let rootElement = Ember.$(config.rootElement || 'body');
-      let loadingClassName = config[addonName].loadingClassName || 'is-loading';
-
-      controller.set('isLoading', value);
-      rootElement.toggleClass(loadingClassName, value);
-
-      if(this.router) {
-        this.router.one('didTransition', function() {
-          controller.set('isLoading', !value);
-          rootElement.toggleClass(loadingClassName, !value);
-        });
-      }
-
-      return this._super(...arguments);
-    }
-  }),
-
   actions: {
-    loading: showSpinner,
-    willTransition: showSpinner,
-    error: hideSpinner,
-    finished: hideSpinner
+    loading(transition, route) {
+      showSpinner.call(this, arguments);
+
+      if (transition) {
+        return true;
+      }
+    },
+    error(error, transition) {
+      hideSpinner.call(this, arguments);
+
+      if (transition) {
+        return true;
+      }
+    },
+    finished() {
+      hideSpinner.call(this, arguments);
+    }
   }
 });

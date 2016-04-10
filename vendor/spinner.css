@@ -1,2 +1,2 @@
 .spinner {display:none;}
-.spinner.is-loading {display:block;}
+.ember-application--loading .spinner {display:block;}

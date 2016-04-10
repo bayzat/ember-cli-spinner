@@ -5,7 +5,8 @@ module.exports = function(/* environment, appConfig */) {
   return {
     'ember-cli-spinner': {
       className: 'spinner',
-      loadingClassName: 'is-loading'
+      loadingClassName: 'is-loading',
+      appLoadingClassName: 'ember-application--loading'
     }
   };
 };
