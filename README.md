@@ -1,4 +1,4 @@
-# ember-cli-spinner
+# ember-cli-spinner ![Ember Community Badge](https://embadge.io/b/6.svg)
 
 ## Installation
 
