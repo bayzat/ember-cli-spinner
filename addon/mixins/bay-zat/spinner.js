@@ -13,14 +13,6 @@ function toggleSpinner(value) {
   this.set('isLoading', value);
   controller.set('isLoading', value);
   rootElement.toggleClass(loadingClassName, value);
-
-  if(this.router) {
-    this.router.one('didTransition', () => {
-      this.set('isLoading', !value);
-      controller.set('isLoading', !value);
-      rootElement.toggleClass(loadingClassName, !value);
-    });
-  }
 }
 
 function hideSpinner() {
@@ -35,8 +27,12 @@ export default Ember.Mixin.create({
   actions: {
     loading(transition, route) {
       showSpinner.call(this, arguments);
-
+      
       if (transition) {
+        transition.promise.finally(() => {
+          hideSpinner.call(this, arguments);
+        });
+
         return true;
       }
     },
