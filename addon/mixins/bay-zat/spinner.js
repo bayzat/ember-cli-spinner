@@ -1,17 +1,16 @@
 import Ember from 'ember';
-import DS from 'ember-data';
 
-const { computed, getOwner } = Ember;
+const { computed, inject, getOwner } = Ember;
 const addonName = 'ember-cli-spinner';
 
 function toggleSpinner(value) {
-  let controller = this.controllerFor('application');
   let config = getOwner(this).resolveRegistration('config:environment');
   let rootElement = Ember.$(config.rootElement || 'body');
   let loadingClassName = config[addonName].loadingClassName || 'is-loading';
 
   this.set('isLoading', value);
-  controller.set('isLoading', value);
+  this.get('spinner').set('isLoading', value);
+  this.controllerFor('application').set('isLoading', value);
   rootElement.toggleClass(loadingClassName, value);
 }
 
@@ -24,10 +23,12 @@ function showSpinner() {
 }
 
 export default Ember.Mixin.create({
+  spinner: inject.service('bay-zat/spinner'),
+
   actions: {
     loading(transition, route) {
       showSpinner.call(this, arguments);
-      
+
       if (transition) {
         transition.promise.finally(() => {
           hideSpinner.call(this, arguments);
